@@ -1,24 +1,40 @@
 package com.nnk.springboot.domain;
 
+import java.util.Collection;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+	@Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     @NotBlank(message = "Username is mandatory")
     private String username;
     @NotBlank(message = "Password is mandatory")
+    @Length(min = 8)
+    @Pattern(regexp = "(.*)([A-Z]+)(.*)",message = "The password must have at least one upper case")
+    @Pattern(regexp = "(.*)([\\W]+)(.*)",message = "The password must have at least one symbol")
     private String password;
     @NotBlank(message = "FullName is mandatory")
     private String fullname;
     @NotBlank(message = "Role is mandatory")
     private String role;
 
-    public Integer getId() {
+    
+	public User(String username, String password, String role) {
+		this.username = username;
+		this.password = password;
+		this.role = role;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -57,4 +73,14 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+	@Override
+	public String toString() {
+		return "User [username=" + username + ", password=" + password + ", fullname=" + fullname + ", role=" + role
+				+ "]";
+	}
+	
+	
+    
+    
 }
