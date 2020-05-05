@@ -1,6 +1,11 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.services.RatingService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,42 +18,100 @@ import javax.validation.Valid;
 
 @Controller
 public class RatingController {
-    // TODO: Inject Rating service
 
+	private static final Logger logger = LogManager.getRootLogger();
+
+	@Autowired
+	private RatingService ratingService;
+	
+	/**
+     * Load all Rating
+     * @param model current Model
+     * @return itself update
+     */	
     @RequestMapping("/rating/list")
     public String home(Model model)
     {
-        // TODO: find all Rating, add to model
+		logger.info("Request = @RequestMapping(\"/rating/list\")");
+    	model.addAttribute("rating", ratingService.listRating());
         return "rating/list";
     }
-
+    
+    /**
+     * Return add Rating list
+     * @return itself update
+     */    
     @GetMapping("/rating/add")
     public String addRatingForm(Rating rating) {
+		logger.info("Request = @GetMapping(\"/rating/add\")");
         return "rating/add";
     }
 
+    /**
+     * Use for validate a new RatingList
+     * @return redirect to Rating Home if valid
+     */    
     @PostMapping("/rating/validate")
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Rating list
-        return "rating/add";
-    }
+		 logger.info("Request = @PostMapping(\"/rating/validate\" + @RequestBody = {}", rating +")");
 
+    	if(!result.hasErrors()) {
+    		ratingService.saveUpdate(rating);
+        	model.addAttribute("rating", ratingService.listRating());
+   		 	logger.info("Rating ajouté avec succès");
+
+    		return "redirect:/rating/list";
+    	}
+    	
+    	return "rating/add";
+    }
+    
+    /**
+     * Use for navigate to the update form with the Rating asked
+     * @return redirect to Rating update resource
+     */
     @GetMapping("/rating/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Rating by Id and to model then show to the form
-        return "rating/update";
-    }
+		logger.info("Request = @GetMapping(\"/rating/update/"+id+"\")");
 
+    	Rating rating = ratingService.findRatingById(id);
+    	model.addAttribute("rating", rating);
+    	return "rating/update";
+    }
+    
+    /**
+     * Use for update a bid and validate it
+     * @return redirect to Rating Home if valid
+     */
     @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Rating and return Rating list
-        return "redirect:/rating/list";
-    }
+		 logger.info("Request = @PostMapping(\"/rating/update/"+id+"\" + @RequestBody = {}", rating+")");
 
+    	if(result.hasErrors()) {
+    		return "rating/update/"+id;
+    	}
+    	rating.setId(id);
+    	ratingService.saveUpdate(rating);
+    	model.addAttribute("rating", ratingService.listRating());
+		logger.info("Rating modifié avec succès");
+
+    	return "redirect:/rating/list";
+    }
+    
+    /**
+     * Use for delete a bid
+     * @return redirect to Rating Home
+     */
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Rating by Id and delete the Rating, return to Rating list
-        return "redirect:/rating/list";
+		logger.info("Request = @GetMapping(\"/rating/delete/"+id+"\")");
+
+    	Rating rating = ratingService.findRatingById(id);
+    	ratingService.delete(rating);
+    	model.addAttribute("rating", ratingService.listRating());
+		logger.info("Rating supprimé avec succès");
+
+    	return "redirect:/rating/list";
     }
 }

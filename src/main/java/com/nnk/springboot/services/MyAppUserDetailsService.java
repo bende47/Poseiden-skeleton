@@ -2,6 +2,9 @@ package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,12 +19,17 @@ import java.util.Arrays;
 public class MyAppUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+	private static final Logger logger = LogManager.getRootLogger();
+
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(userName);
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
+        logger.info("User connected : " + userName + " role : " + authority);
+        
         UserDetails userDetails = (UserDetails)new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(), Arrays.asList(authority));
         return userDetails;
     }
+    
 }
