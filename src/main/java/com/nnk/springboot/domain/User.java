@@ -1,17 +1,16 @@
 package com.nnk.springboot.domain;
 
-import java.util.Collection;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "users")
 public class User {
+	
 	@Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
@@ -28,6 +27,10 @@ public class User {
     private String role;
 
     
+	public User() {
+		super();
+	}
+
 	public User(String username, String password, String role) {
 		this.username = username;
 		this.password = password;
@@ -79,8 +82,5 @@ public class User {
 		return "User [username=" + username + ", password=" + password + ", fullname=" + fullname + ", role=" + role
 				+ "]";
 	}
-	
-	
-    
     
 }
