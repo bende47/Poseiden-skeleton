@@ -23,93 +23,100 @@ public class RuleNameController {
 
 	@Autowired
 	private RuleNameService ruleNameService;
-	
-	 /**
-     * Load all Rule
-     * @param model current Model
-     * @return itself update
-     */
-	
-    @RequestMapping("/ruleName/list")
-    public String home(Model model)
-    {
-    	model.addAttribute("rulename", ruleNameService.listRuleName());
-    	return "ruleName/list";
-    }
-    
-    /**
-     * Return add Rule list
-     * @return itself update
-     */
 
-    @GetMapping("/ruleName/add")
-    public String addRuleForm(RuleName bid) {
-        return "ruleName/add";
-    }
-    
-    /**
-     * Use for validate a new RuleList
-     * @return redirect to Rule Home if valid
-     */
+	/**
+	 * Load all Rule
+	 * 
+	 * @param model current Model
+	 * @return itself update
+	 */
+	@RequestMapping("/ruleName/list")
+	public String home(Model model) {
+		logger.info("Request = @RequestMapping(\"/ruleName/list\")");
+		model.addAttribute("rulename", ruleNameService.listRuleName());
+		return "ruleName/list";
+	}
 
-    @PostMapping("/ruleName/validate")
-    public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
+	/**
+	 * Return add Rule list
+	 * 
+	 * @return itself update
+	 */
+	@GetMapping("/ruleName/add")
+	public String addRuleForm(RuleName bid) {
+		logger.info("Request = @GetMapping(\"/ruleName/add\")");
+		return "ruleName/add";
+	}
 
-    	if(!result.hasErrors()) {
-    		ruleNameService.saveUpdate(ruleName);    		
-        	model.addAttribute("rulename", ruleNameService.listRuleName());
-   		 	logger.info("RuleName ajouté avec succès" + ruleName.toString());
+	/**
+	 * Use for validate a new RuleList
+	 * 
+	 * @return redirect to Rule Home if valid
+	 */
+	@PostMapping("/ruleName/validate")
+	public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
+		logger.info("Request = @PostMapping(\"/ruleName/validate\" + @RequestBody = {}", ruleName + ")");
 
-        	return "redirect:/ruleName/list";
+		if (!result.hasErrors()) {
+			ruleNameService.saveUpdate(ruleName);
+			model.addAttribute("rulename", ruleNameService.listRuleName());
+			logger.info("RuleName ajouté avec succès");
 
-    	}
-    	return "ruleName/add";
-    }
+			return "redirect:/ruleName/list";
 
-    /**
-     * Use for navigate to the update form with the Rule asked
-     * @return redirect to Rule update resource
-     */
-    
-    @GetMapping("/ruleName/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-    	RuleName ruleName = ruleNameService.findRuleNameById(id);
-    	model.addAttribute("rulename", ruleName);
-    	return "ruleName/update";
-    }
+		}
+		return "ruleName/add";
+	}
 
-    /**
-     * Use for update a bid and validate it
-     * @return redirect to Rule Home if valid
-     */
-    
-    @PostMapping("/ruleName/update/{id}")
-    public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
-                             BindingResult result, Model model) {
-    	if(result.hasErrors()) {
-    		return "/ruleName/update/"+id;
-    	}
-    	
-    	ruleName.setId(id);
-    	ruleNameService.saveUpdate(ruleName);
-    	model.addAttribute("rulename", ruleNameService.listRuleName());
-		logger.info("RuleName modifié avec succès" + ruleName.toString());
+	/**
+	 * Use for navigate to the update form with the Rule asked
+	 * 
+	 * @return redirect to Rule update resource
+	 */
+	@GetMapping("/ruleName/update/{id}")
+	public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/ruleName/update/" + id + "\")");
+		RuleName ruleName = ruleNameService.findRuleNameById(id);
+		model.addAttribute("rulename", ruleName);
+		return "ruleName/update";
+	}
 
-    	return "redirect:/ruleName/list";
-    }
+	/**
+	 * Use for update a bid and validate it
+	 * 
+	 * @return redirect to Rule Home if valid
+	 */
+	@PostMapping("/ruleName/update/{id}")
+	public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName, BindingResult result,
+			Model model) {
+		logger.info("Request = @PostMapping(\"/ruleName/update/" + id + "\" + @RequestBody = {}", ruleName + ")");
 
-    /**
-     * Use for delete a bid
-     * @return redirect to Rule Home
-     */
-    
-    @GetMapping("/ruleName/delete/{id}")
-    public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
-    	RuleName ruleName = ruleNameService.findRuleNameById(id);
-    	ruleNameService.delete(ruleName);
-    	model.addAttribute("rulename", ruleNameService.listRuleName());
-		logger.info("RuleName supprimé avec succès" + ruleName.toString());
+		if (result.hasErrors()) {
+			return "/ruleName/update/" + id;
+		}
 
-    	return "redirect:/ruleName/list";
-    }
+		ruleName.setId(id);
+		ruleNameService.saveUpdate(ruleName);
+		model.addAttribute("rulename", ruleNameService.listRuleName());
+		logger.info("RuleName modifié avec succès");
+
+		return "redirect:/ruleName/list";
+	}
+
+	/**
+	 * Use for delete a bid
+	 * 
+	 * @return redirect to Rule Home
+	 */
+	@GetMapping("/ruleName/delete/{id}")
+	public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/ruleName/delete/" + id + "\")");
+
+		RuleName ruleName = ruleNameService.findRuleNameById(id);
+		ruleNameService.delete(ruleName);
+		model.addAttribute("rulename", ruleNameService.listRuleName());
+		logger.info("RuleName supprimé avec succès");
+
+		return "redirect:/ruleName/list";
+	}
 }

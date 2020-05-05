@@ -19,101 +19,109 @@ import javax.validation.Valid;
 
 @Controller
 public class UserController {
-	
+
 	private static final Logger logger = LogManager.getRootLogger();
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    /**
-     * Load all User
-     * @param model current Model
-     * @return itself update
-     */
-    
-    @RequestMapping("/user/list")
-    public String home(Model model)
-    {
-        model.addAttribute("users", userRepository.findAll());
-        return "user/list";
-    }
-    
-    /**
-     * Return add User list
-     * @return itself update
-     */
+	/**
+	 * Load all User
+	 * 
+	 * @param model current Model
+	 * @return itself update
+	 */
+	@RequestMapping("/user/list")
+	public String home(Model model) {
+		logger.info("Request = @RequestMapping(\"/user/list\")");
+		model.addAttribute("users", userRepository.findAll());
+		return "user/list";
+	}
 
-    @GetMapping("/user/add")
-    public String addUser(User bid) {
-        return "user/add";
-    }
+	/**
+	 * Return add User list
+	 * 
+	 * @return itself update
+	 */
+	@GetMapping("/user/add")
+	public String addUser(User bid) {
+		logger.info("Request = @GetMapping(\"/user/add\")");
+		return "user/add";
+	}
 
-    /**
-     * Use for validate a new UserList
-     * @return redirect to User Home if valid
-     */
-    
-    @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
-        if (!result.hasErrors()) {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            userRepository.save(user);
-            model.addAttribute("users", userRepository.findAll());
-   		 	logger.info("User ajouté avec succès" + user.toString());
+	/**
+	 * Use for validate a new UserList
+	 * 
+	 * @return redirect to User Home if valid
+	 */
+	@PostMapping("/user/validate")
+	public String validate(@Valid User user, BindingResult result, Model model) {
+		logger.info("Request = @PostMapping(\"/user/validate\" + @RequestBody = {}", user + ")");
 
-            return "redirect:/user/list";
-        }
-        return "user/add";
-    }
+		if (!result.hasErrors()) {
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			user.setPassword(encoder.encode(user.getPassword()));
+			userRepository.save(user);
+			model.addAttribute("users", userRepository.findAll());
+			logger.info("User ajouté avec succès");
 
-    /**
-     * Use for navigate to the update form with the User asked
-     * @return redirect to User update resource
-     */
-    
-    @GetMapping("/user/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        user.setPassword("");
-        model.addAttribute("user", user);
-        return "user/update";
-    }
-    
-    /**
-     * Use for update a bid and validate it
-     * @return redirect to User Home if valid
-     */
+			return "redirect:/user/list";
+		}
+		return "user/add";
+	}
 
-    @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
-                             BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "user/update";
-        }
+	/**
+	 * Use for navigate to the update form with the User asked
+	 * 
+	 * @return redirect to User update resource
+	 */
+	@GetMapping("/user/update/{id}")
+	public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/user/update/" + id + "\")");
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+		user.setPassword("");
+		model.addAttribute("user", user);
+		return "user/update";
+	}
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setId(id);
-        userRepository.save(user);
-        model.addAttribute("users", userRepository.findAll());
-		logger.info("User modifié avec succès" + user.toString());
+	/**
+	 * Use for update a bid and validate it
+	 * 
+	 * @return redirect to User Home if valid
+	 */
+	@PostMapping("/user/update/{id}")
+	public String updateUser(@PathVariable("id") Integer id, @Valid User user, BindingResult result, Model model) {
+		logger.info("Request = @PostMapping(\"/user/update/" + id + "\" + @RequestBody = {}", user + ")");
 
-        return "redirect:/user/list";
-    }
-    
-    /**
-     * Use for delete a bid
-     * @return redirect to User Home
-     */
+		if (result.hasErrors()) {
+			return "user/update";
+		}
 
-    @GetMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id, Model model) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        userRepository.delete(user);
-        model.addAttribute("users", userRepository.findAll());
-		logger.info("User ajouté supprimé succès" + user.toString());
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		user.setPassword(encoder.encode(user.getPassword()));
+		user.setId(id);
+		userRepository.save(user);
+		model.addAttribute("users", userRepository.findAll());
+		logger.info("User modifié avec succès");
 
-        return "redirect:/user/list";
-    }
+		return "redirect:/user/list";
+	}
+
+	/**
+	 * Use for delete a bid
+	 * 
+	 * @return redirect to User Home
+	 */
+	@GetMapping("/user/delete/{id}")
+	public String deleteUser(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/bidList/user/" + id + "\")");
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+		userRepository.delete(user);
+		model.addAttribute("users", userRepository.findAll());
+		logger.info("User ajouté supprimé succès");
+
+		return "redirect:/user/list";
+	}
 }

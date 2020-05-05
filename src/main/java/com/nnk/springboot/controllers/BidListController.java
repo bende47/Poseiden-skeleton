@@ -33,6 +33,7 @@ public class BidListController {
     @RequestMapping("/bidList/list")
     public String home(Model model)
     {
+		logger.info("Request = @RequestMapping(\"/bidList/list\")");
         model.addAttribute("bidlist",bildListService.listBid());
         return "bidList/list";
     }
@@ -40,10 +41,10 @@ public class BidListController {
     /**
      * Return add Bids list
      * @return itself update
-     */
-    
+     */    
     @GetMapping("/bidList/add")
     public String addBidForm(BidList bid) {
+		logger.info("Request = @GetMapping(\"/bidList/add\")");
         return "bidList/add";
     }
     
@@ -51,13 +52,14 @@ public class BidListController {
      * Use for validate a new BidList
      * @return redirect to Bid Home if valid
      */
-
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
-    	 if (!result.hasErrors()) {            
+		 logger.info("Request = @PostMapping(\"/bidList/validate\" + @RequestBody = {}", bid +")");
+
+    	if (!result.hasErrors()) {            
     		 bildListService.saveUpdate(bid);   
              model.addAttribute("bidlist", bildListService.listBid());
-    		 logger.info("BidList ajouté avec succès" + bid.toString());
+    		 logger.info("BidList ajouté avec succès");
 
     		 return "redirect:/bidList/list";
     	 }
@@ -69,9 +71,9 @@ public class BidListController {
      * Use for navigate to the update form with the Bid asked
      * @return redirect to Bid update resource
      */
-
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/bidList/update/"+id+"\")");
     	BidList bidList = bildListService.findBidById(id);
         model.addAttribute("bidList", bidList);
         return "bidList/update";
@@ -81,11 +83,12 @@ public class BidListController {
     /**
      * Use for update a bid and validate it
      * @return redirect to Bid Home if valid
-     */
-    
+     */    
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                              BindingResult result, Model model) {
+		 logger.info("Request = @PostMapping(\"/bidList/update/"+id+"\" + @RequestBody = {}", bidList+")");
+
     	if (result.hasErrors()) {
             return "bidList/update/"+id;
         }
@@ -93,7 +96,7 @@ public class BidListController {
     	bidList.setBidListId(id);
     	bildListService.saveUpdate(bidList);  
         model.addAttribute("bidlist", bildListService.listBid());
-		logger.info("BidList modifié avec succès" + bidList.toString());
+		logger.info("BidList modifié avec succès");
 
     	return "redirect:/bidList/list";
     }
@@ -101,14 +104,15 @@ public class BidListController {
     /**
      * Use for delete a bid
      * @return redirect to Bid Home
-     */
-    
+     */    
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/bidList/delete/"+id+"\")");
+
        BidList bidList = bildListService.findBidById(id);
        bildListService.delete(bidList);
        model.addAttribute("bidlist", bildListService.listBid());
-       logger.info("BidList supprimé avec succès" + bidList.toString());
+       logger.info("BidList supprimé avec succès");
 
        return "redirect:/bidList/list";
     }

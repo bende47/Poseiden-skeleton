@@ -28,11 +28,11 @@ public class RatingController {
      * Load all Rating
      * @param model current Model
      * @return itself update
-     */
-	
+     */	
     @RequestMapping("/rating/list")
     public String home(Model model)
     {
+		logger.info("Request = @RequestMapping(\"/rating/list\")");
     	model.addAttribute("rating", ratingService.listRating());
         return "rating/list";
     }
@@ -40,25 +40,25 @@ public class RatingController {
     /**
      * Return add Rating list
      * @return itself update
-     */
-    
+     */    
     @GetMapping("/rating/add")
     public String addRatingForm(Rating rating) {
+		logger.info("Request = @GetMapping(\"/rating/add\")");
         return "rating/add";
     }
 
     /**
      * Use for validate a new RatingList
      * @return redirect to Rating Home if valid
-     */
-    
+     */    
     @PostMapping("/rating/validate")
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
-    
+		 logger.info("Request = @PostMapping(\"/rating/validate\" + @RequestBody = {}", rating +")");
+
     	if(!result.hasErrors()) {
     		ratingService.saveUpdate(rating);
         	model.addAttribute("rating", ratingService.listRating());
-   		 	logger.info("Rating ajouté avec succès" + rating.toString());
+   		 	logger.info("Rating ajouté avec succès");
 
     		return "redirect:/rating/list";
     	}
@@ -70,9 +70,10 @@ public class RatingController {
      * Use for navigate to the update form with the Rating asked
      * @return redirect to Rating update resource
      */
-
     @GetMapping("/rating/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/rating/update/"+id+"\")");
+
     	Rating rating = ratingService.findRatingById(id);
     	model.addAttribute("rating", rating);
     	return "rating/update";
@@ -82,17 +83,18 @@ public class RatingController {
      * Use for update a bid and validate it
      * @return redirect to Rating Home if valid
      */
-
     @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) {
+		 logger.info("Request = @PostMapping(\"/rating/update/"+id+"\" + @RequestBody = {}", rating+")");
+
     	if(result.hasErrors()) {
     		return "rating/update/"+id;
     	}
     	rating.setId(id);
     	ratingService.saveUpdate(rating);
     	model.addAttribute("rating", ratingService.listRating());
-		logger.info("Rating modifié avec succès" + rating.toString());
+		logger.info("Rating modifié avec succès");
 
     	return "redirect:/rating/list";
     }
@@ -101,13 +103,14 @@ public class RatingController {
      * Use for delete a bid
      * @return redirect to Rating Home
      */
-
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/rating/delete/"+id+"\")");
+
     	Rating rating = ratingService.findRatingById(id);
     	ratingService.delete(rating);
     	model.addAttribute("rating", ratingService.listRating());
-		logger.info("Rating supprimé avec succès" + rating.toString());
+		logger.info("Rating supprimé avec succès");
 
     	return "redirect:/rating/list";
     }

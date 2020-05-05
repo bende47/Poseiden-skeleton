@@ -34,6 +34,7 @@ public class CurveController {
 	
 	@RequestMapping("/curvePoint/list")
 	public String home(Model model) {
+		logger.info("Request = @RequestMapping(\"/curvePoint/list\")");		
 		model.addAttribute("curvepoint", curvePointService.listCurvePoint());
 		return "curvePoint/list";
 	}
@@ -45,6 +46,7 @@ public class CurveController {
 	
 	@GetMapping("/curvePoint/add")
 	public String addBidForm(CurvePoint bid) {
+		logger.info("Request = @GetMapping(\"/curvePoint/add\")");
 		return "curvePoint/add";
 	}
 
@@ -55,12 +57,13 @@ public class CurveController {
 	
 	@PostMapping("/curvePoint/validate")
 	public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
+		 logger.info("Request = @PostMapping(\"/curvePoint/validate\" + @RequestBody = {}", curvePoint +")");
 
 		if (!result.hasErrors()) {
 			curvePoint.setCreationDate(new Date());
 			curvePointService.saveUpdate(curvePoint);
 			model.addAttribute("curvepoint", curvePointService.listCurvePoint());
-   		 	logger.info("CurvePoint ajouté avec succès" + curvePoint.toString());
+   		 	logger.info("CurvePoint ajouté avec succès");
 
 			return "redirect:/curvePoint/list";
 
@@ -75,6 +78,8 @@ public class CurveController {
 
 	@GetMapping("/curvePoint/update/{id}")
 	public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/curvePoint/update/"+id+"\")");
+
 		CurvePoint curvePoint = curvePointService.findCurvePointById(id);
 		model.addAttribute("curvepoint", curvePoint);
 		return "curvePoint/update";
@@ -88,7 +93,8 @@ public class CurveController {
 	@PostMapping("/curvePoint/update/{id}")
 	public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint, BindingResult result,
 			Model model) {
-		
+		 logger.info("Request = @PostMapping(\"/curvePoint/update/"+id+"\" + @RequestBody = {}", curvePoint+")");
+	
 		if (result.hasErrors()) {
             return "curvePoint/update/"+id;
         }
@@ -97,7 +103,7 @@ public class CurveController {
 		curvePoint.setAsOfDate(new Date());
 		curvePointService.saveUpdate(curvePoint);
 		model.addAttribute("curvepoint", curvePointService.listCurvePoint());
-		logger.info("CurvePoint modifié avec succès" + curvePoint.toString());
+		logger.info("CurvePoint modifié avec succès");
 
 		return "redirect:/curvePoint/list";
 	}
@@ -109,10 +115,12 @@ public class CurveController {
 
 	@GetMapping("/curvePoint/delete/{id}")
 	public String deleteBid(@PathVariable("id") Integer id, Model model) {
+		logger.info("Request = @GetMapping(\"/curvePoint/delete/"+id+"\")");
+
 		CurvePoint curvePoint = curvePointService.findCurvePointById(id);
 		curvePointService.delete(curvePoint);
 		model.addAttribute("curvepoint", curvePointService.listCurvePoint());
-		logger.info("CurvePoint supprimé avec succès" + curvePoint.toString());
+		logger.info("CurvePoint supprimé avec succès");
 
 		return "redirect:/curvePoint/list";
 	}
