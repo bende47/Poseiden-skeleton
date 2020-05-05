@@ -14,8 +14,6 @@ Default database : MySQL 8.0.19
 ### Testing
 Use application.properties<br/>
 
-Ready for Testing from your IDE
-
 ### Build Production
 
 Use application-prod.properties (update jdbc connection values)
