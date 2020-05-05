@@ -1,5 +1,6 @@
 package com.nnk.springboot.services;
 
+import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,27 +13,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.Arrays;
 
 @Service
 public class MyAppUserDetailsService implements UserDetailsService {
-	@Autowired
+    @Autowired
     private UserRepository userRepository;
-	
 	private static final Logger logger = LogManager.getRootLogger();
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        return Optional.ofNullable(userRepository.findByUserName(userName))
-                .map(user ->
-                {
-                    GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
-                    logger.info("User connected : " + userName + " role : " + authority);
-                    return (UserDetails) new org.springframework.security.core.userdetails.User(user.getUsername(),
-                            user.getPassword(), Collections.singletonList(authority));
-                }).orElseThrow(() -> new UsernameNotFoundException("Your login/password is wrong or this account doesn't exist"));
-
-
+        User user = userRepository.findByUserName(userName);
+        GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
+        logger.info("User connected : " + userName + " role : " + authority);
+        
+        UserDetails userDetails = (UserDetails)new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(), Arrays.asList(authority));
+        return userDetails;
     }
+    
 }
