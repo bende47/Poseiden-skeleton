@@ -12,15 +12,13 @@ All views are be secured. You can register new users with an Administrator accou
 Default database : MySQL 8.0.19
 
 ### Testing
-For Spring : Use application.properties<br/>
-
-Ready for Testing from your IDE
+Use application.properties<br/>
 
 ### Build Production
 
-For Spring : Use application-prod.properties (update jdbc connection values)
+Use application-prod.properties (update jdbc connection values)
 <ul>
-<li><code>spring.jpa.hibernate.ddl-auto=update</code> Set value to none if the dll is already loaded ( and you want to update it manually)</li>
+<li><code>spring.jpa.hibernate.ddl-auto=update</code> </li>
 </ul>
 
 <br/>To build the app : <code>clean package spring-boot:repackage</code>
@@ -28,8 +26,4 @@ For Spring : Use application-prod.properties (update jdbc connection values)
 
 ### BDD 
 Use the file doc/data.sql for create DLL and import the first admin account (login : ADMIN, password : Azerty@2020)
-
-
-
-
 
