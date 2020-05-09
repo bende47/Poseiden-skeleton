@@ -51,6 +51,7 @@ public class TradeTests {
 
 	@Test
 	public void listTradeTest() {
+		trade = tradeRepository.save(trade);
 		List<Trade> listResult = tradeRepository.findAll();
 		Assert.assertTrue(listResult.size() > 0);
 	}

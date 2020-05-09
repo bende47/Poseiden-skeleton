@@ -51,6 +51,7 @@ public class RatingTests {
 
 	@Test
 	public void ListRatingTest() {
+		rating = ratingRepository.save(rating);
 		List<Rating> listResult = ratingRepository.findAll();
 		Assert.assertTrue(listResult.size() > 0);
 	}

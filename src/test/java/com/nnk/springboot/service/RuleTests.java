@@ -28,7 +28,7 @@ public class RuleTests {
 	}
 
 	@Test
-	public void saveRuleTest() {
+	public void saveRuleTest() {		
 		rule = ruleNameRepository.save(rule);
 		Assert.assertNotNull(rule.getId());
 		Assert.assertTrue(rule.getName().equals("Rule Name"));
@@ -50,6 +50,7 @@ public class RuleTests {
 	
 	@Test
 	public void listRuleTest() {
+		rule = ruleNameRepository.save(rule);
 		List<RuleName> listResult = ruleNameRepository.findAll();
 		Assert.assertTrue(listResult.size() > 0);
 	}

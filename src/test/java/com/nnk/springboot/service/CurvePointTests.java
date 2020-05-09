@@ -52,6 +52,7 @@ public class CurvePointTests {
 	
 	@Test
 	public void listCurvePointTest() {
+		curvePoint = curvePointRepository.save(curvePoint);
 		List<CurvePoint> listResult = curvePointRepository.findAll();
 		Assert.assertTrue(listResult.size() > 0);
 	}

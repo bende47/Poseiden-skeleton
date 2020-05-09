@@ -52,6 +52,7 @@ public class BidTests {
 	
 	@Test
 	public void bidListTest() {
+		bid = bidListRepository.save(bid);
 		List<BidList> listResult = bidListRepository.findAll();
 		Assert.assertTrue(listResult.size() > 0);
 	}
