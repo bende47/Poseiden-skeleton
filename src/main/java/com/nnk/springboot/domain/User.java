@@ -18,8 +18,9 @@ public class User {
     private String username;
     @NotBlank(message = "Password is mandatory")
     @Length(min = 8)
-    @Pattern(regexp = "(.*)([A-Z]+)(.*)",message = "The password must have at least one upper case")
+    @Pattern(regexp = "(.*)([A-Z]+)(.*)",message = "The password must have at least one uppercase")
     @Pattern(regexp = "(.*)([\\W]+)(.*)",message = "The password must have at least one symbol")
+    @Pattern(regexp = "(.*)([0-9]+)(.*)",message = "Password must have at least one digit")
     private String password;
     @NotBlank(message = "FullName is mandatory")
     private String fullname;
